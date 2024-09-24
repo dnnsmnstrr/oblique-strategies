@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -23,23 +23,44 @@ const obliqueStrategies = [
   "Fill every beat with something",
 ]
 
+
 export function ObliqueStrategiesComponent() {
   const [strategy, setStrategy] = useState(() => obliqueStrategies[Math.floor(Math.random() * obliqueStrategies.length)])
   const [isFlipping, setIsFlipping] = useState(false)
   const [flipCount, setFlipCount] = useState(0)
+  const [usedIndexes, setUsedIndexes] = useState<number[]>([]);
+
+  async function fetchStrategy() {
+    const res = await fetch('/api/random', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ usedIndexes }), // Send used indexes to avoid duplicates
+    });
+    const data = await res.json();
+    console.log(data)
+    if (data.strategy) {
+      setStrategy(data.strategy);
+      setUsedIndexes([...usedIndexes, data.index]); // Add new index to used indexes
+    } else if (data.error) {
+      setStrategy(data.error); // Handle the case where all strategies have been used
+    }
+  }
+
+  useEffect(() => {
+    fetchStrategy()
+  }, [])
 
   const getRandomStrategy = useCallback(() => {
     if (isFlipping) return
     setIsFlipping(true)
     setFlipCount(prev => prev + 1)
-    setTimeout(() => {
-      let newStrategy
-      do {
-        newStrategy = obliqueStrategies[Math.floor(Math.random() * obliqueStrategies.length)]
-      } while (newStrategy === strategy)
-      setStrategy(newStrategy)
+    setTimeout(async () => {
+      await fetchStrategy()
       setIsFlipping(false)
     }, 250) // Half of the flip duration
+
   }, [strategy, isFlipping])
 
   const textVariants = {
