@@ -4,28 +4,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { motion, AnimatePresence } from "framer-motion"
 
-const obliqueStrategies = [
-  "Use an old idea",
-  "State the problem in words as clearly as possible",
-  "Only one element of each kind",
-  "What would your closest friend do?",
-  "What to increase? What to reduce?",
-  "Are there sections? Consider transitions",
-  "Try faking it!",
-  "Honour thy error as a hidden intention",
-  "Ask your body",
-  "Work at a different speed",
-  "Look closely at the most embarrassing details and amplify them",
-  "Don't be afraid of things because they're easy to do",
-  "Don't be frightened of clichés",
-  "What is the reality of the situation?",
-  "Simple subtraction",
-  "Fill every beat with something",
-]
-
-
 export function ObliqueStrategiesComponent() {
-  const [strategy, setStrategy] = useState(() => obliqueStrategies[Math.floor(Math.random() * obliqueStrategies.length)])
+  const [strategy, setStrategy] = useState('')
   const [isFlipping, setIsFlipping] = useState(false)
   const [flipCount, setFlipCount] = useState(0)
   const [usedIndexes, setUsedIndexes] = useState<number[]>([]);
@@ -85,39 +65,22 @@ export function ObliqueStrategiesComponent() {
   return (
     <div className="perspective-1000 w-80 h-48">
       <motion.div
-        animate={{ rotateY: flipCount * 180 }}
+        animate={{ rotateY: flipCount % 2 * 180 }}
         transition={{ duration: 0.7, ease: "easeInOut" }}
         className="preserve-3d cursor-pointer w-full h-full relative"
         onClick={getRandomStrategy}
       >
         <Card className="w-full h-full flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300 absolute inset-0 backface-hidden">
-          <CardContent>
+          <CardContent className='py-0'>
             <AnimatePresence mode="wait">
               <motion.p
-                key={strategy + '-front'}
+                key={strategy}
                 variants={textVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
                 custom={flipCount}
                 className="text-xl text-center font-medium text-gray-800"
-              >
-                {strategy}
-              </motion.p>
-            </AnimatePresence>
-          </CardContent>
-        </Card>
-        <Card className="w-full h-full flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300 absolute inset-0 backface-hidden [transform:rotateY(180deg)]">
-          <CardContent className='py-0'>
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={strategy + '-back'}
-                variants={textVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                custom={flipCount + 1}
-                className="text-2xl text-center font-medium text-gray-800"
               >
                 {strategy}
               </motion.p>
