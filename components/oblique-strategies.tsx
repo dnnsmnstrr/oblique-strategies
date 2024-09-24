@@ -87,7 +87,7 @@ export function ObliqueStrategiesComponent() {
           </CardContent>
         </Card>
         <Card className="w-full h-full flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300 absolute inset-0 backface-hidden [transform:rotateY(180deg)]">
-          <CardContent>
+          <CardContent className='py-0'>
             <AnimatePresence mode="wait">
               <motion.p
                 key={strategy + '-back'}
@@ -96,7 +96,7 @@ export function ObliqueStrategiesComponent() {
                 animate="visible"
                 exit="exit"
                 custom={flipCount + 1}
-                className="text-xl text-center font-medium text-gray-800"
+                className="text-2xl text-center font-medium text-gray-800"
               >
                 {strategy}
               </motion.p>
